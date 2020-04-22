@@ -12,6 +12,7 @@
     <artifactId>minio</artifactId>
     <version>1.0.1</version>
     <name>minio</name>
+
     <description>Demo project for Spring Boot</description>
 
     <properties>

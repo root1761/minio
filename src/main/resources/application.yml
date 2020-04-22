@@ -4,7 +4,7 @@ server:
     context-path: /minio
     jsp:
       init-parameters:
-        developments: true
+        development: true
 spring:
   application:
     name: minioserver
@@ -14,7 +14,7 @@ spring:
       suffix: .jsp
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
       enabled: true
+      max-request-size: 2147483647
+      max-file-size: 2147483648
 

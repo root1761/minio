@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+<%--    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
     $(function(){
         $("#button").click(function(){
@@ -25,13 +25,19 @@
         })
 
     })
-</script>
+</script>--%>
 </head>
 <body>
-<form method="post">
-<input type="file" id="file" /><br/>
-    <input type="button" value="提交" id="button"/>
-    <input type="button" value="下载" onclick="location.href='${pageContext.request.contextPath}/file/download?fileName=day1 第二节课.wmv'"/>
+<form method="post" action="/minio/minioTest/uploadFile" enctype="multipart/form-data">
+<input type="file" id="file" name="file" />
+    <input type="hidden" id="bucketName" name="bucketName" value="1111"/>
+    <input type="submit" value="提交"/>
+
+</form>
+<form method="post" action="/minio/minioTest/downLoadFile" enctype="multipart/form-data">
+   文件名称: <input type="text" name="file" value=""/>
+   桶名称: <input type="text" name="bucketName" value=""/>
+    <input type="submit" value="提交"/>
 </form>
 </body>
 </html>
