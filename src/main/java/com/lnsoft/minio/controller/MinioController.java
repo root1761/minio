@@ -30,7 +30,7 @@ import java.util.Objects;
  */
 @RestController
 @Slf4j
-@RequestMapping("/minioTest")
+@RequestMapping("/minioOperation")
 public class MinioController {
 @Autowired
     private MinioTemplate minioTemplate;
@@ -41,11 +41,11 @@ public class MinioController {
      * @param bucketName 桶名称
      * @return
      */
+    @CrossOrigin
     @PostMapping("/uploadFile")
-    @ResponseBody
-    public Response uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("bucketName") String bucketName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidArgumentException {
+    public Response uploadFile(@RequestParam("pre") String pre,@RequestParam("file") MultipartFile file, @RequestParam("bucketName") String bucketName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidArgumentException {
         log.info("MinioController[]uploadFile[]file:{}bucketName:{}",file,bucketName);
-      return minioTemplate.uploadFile(file,bucketName);
+      return minioTemplate.uploadFile(pre,file,bucketName);
     }
 
     /**
@@ -56,11 +56,49 @@ public class MinioController {
      * @param response
      * @return
      */
-    @PostMapping("/downLoadFile")
-    @ResponseBody
-    public Response downLoadFile(@RequestParam(value = "bucketName") String bucketName, @RequestParam(required = true) String file, HttpServletRequest request, HttpServletResponse response){
+    @CrossOrigin
+    @PostMapping("/downloadFile")
+    public Response downloadFile(@RequestParam(value = "bucketName") String bucketName, @RequestParam(required = true) String file, HttpServletRequest request, HttpServletResponse response){
         log.info("MinioController[]downLoadFile[]file:{}request:{}response:{}",file,request,response);
-       return minioTemplate.downLoadFile(bucketName,file,request,response);
+       return minioTemplate.downloadFile(bucketName,file,request,response);
     }
+
+    /**
+     * 创建桶
+     * @param bucketName 桶名称
+     * @return
+     */
+    @CrossOrigin
+    @PostMapping("/createBucket")
+    public Response createBucket(@RequestParam String bucketName){
+        log.info("MinioController[]createBucket[]bucketName:{}",bucketName);
+        return minioTemplate.createBucket(bucketName);
+    }
+
+    /**
+     * 删除桶
+     * @param bucketName 桶名称
+     * @return
+     */
+    @CrossOrigin
+    @PostMapping("/removeBucket")
+    public Response removeBucket(@RequestParam String bucketName){
+        log.info("MinioController[]removeBucket[]bucketName:{}",bucketName);
+        return minioTemplate.deleteBucket(bucketName);
+}
+
+    /**
+     * 删除文件
+     * @param bucketName
+     * @param fileName
+     * @return
+     */
+    @CrossOrigin
+    @PostMapping("/removeFileObject")
+    public Response removeFileObject(@RequestParam String bucketName,@RequestParam String fileName){
+        log.info("MinioController[]removeFileObject[]bucketName:{}fileName:{}",bucketName,fileName);
+        return minioTemplate.deleteObject(bucketName,fileName);
+    }
+
 
 }

@@ -28,13 +28,13 @@
 </script>--%>
 </head>
 <body>
-<form method="post" action="/minio/minioTest/uploadFile" enctype="multipart/form-data">
+<form method="post" action="/minio/minioOperation/uploadFile" enctype="multipart/form-data">
 <input type="file" id="file" name="file" />
-    <input type="hidden" id="bucketName" name="bucketName" value="1111"/>
+    <input type="hidden" id="bucketName" name="bucketName" value="kkx"/>
     <input type="submit" value="提交"/>
 
 </form>
-<form method="post" action="/minio/minioTest/downLoadFile" enctype="multipart/form-data">
+<form method="post" action="/minio/minioOperation/downloadFile" enctype="multipart/form-data">
    文件名称: <input type="text" name="file" value=""/>
    桶名称: <input type="text" name="bucketName" value=""/>
     <input type="submit" value="提交"/>

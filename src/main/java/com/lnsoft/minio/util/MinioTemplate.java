@@ -42,8 +42,15 @@ public class MinioTemplate {
     @Autowired
     private  MinioClient minioClient;
 
-    public Response uploadFile(MultipartFile file, String bucketName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidArgumentException {
-        log.info("MinioClient[]uploadFile[]file:{}bucketName:{}",file,bucketName);
+    /**
+     *上传文件
+     * @param pre 日期拼接
+     * @param file 文件
+     * @param bucketName 桶名称
+     * @return
+     */
+    public Response uploadFile(String pre,MultipartFile file, String bucketName)  {
+        log.info("MinioClient[]uploadFile[]pre:{}file:{}bucketName:{}",pre,file,bucketName);
         if (StringUtils.isEmpty(file)){
             return Response.no(ResponseCode.FILENAME_IS_NULL.getMessage());
         }
@@ -52,7 +59,7 @@ public class MinioTemplate {
         }
         try {
             if ( minioClient.bucketExists(bucketName)){
-                minioClient.putObject(bucketName,file.getOriginalFilename(),file.getInputStream(),file.getSize(),file.getContentType());
+                minioClient.putObject(bucketName,pre+file.getOriginalFilename(),file.getInputStream(),file.getSize(),file.getContentType());
                 return Response.yes();
 
 
@@ -60,11 +67,19 @@ public class MinioTemplate {
                 return Response.yes(ResponseCode.BUCKET_IS_NOT_EXIST.toString());
         }  catch (Exception e) {
             log.error("MinioClient[]uploadFile[]file:{}bucketName:{}cause:{}",file,bucketName,e);
-            e.printStackTrace();
             return Response.no();
         }
     }
-    public Response downLoadFile( String bucketName,  String file, HttpServletRequest request, HttpServletResponse response){
+
+    /**
+     *下载文件
+     * @param bucketName 桶名称
+     * @param file 文件名称
+     * @param request
+     * @param response
+     * @return
+     */
+    public Response downloadFile( String bucketName,  String file, HttpServletRequest request, HttpServletResponse response){
         log.info("MinioClient[]downLoadFile[]file:{}request:{}response:{}",file,request,response);
         if (StringUtils.isEmpty(file)){
             return Response.no(ResponseCode.FILENAME_IS_NULL.getMessage());
@@ -81,7 +96,7 @@ public class MinioTemplate {
             }else{
                 fileName=new String(file.getBytes("UTF-8"),"iso-8859-1");
             }
-            response.setHeader("Content-Disposition","attachment;filename="+file);
+            response.setHeader("Content-disposition","attachment;filename="+file);
             response.setContentType("application/force-download");
             response.setCharacterEncoding("UTF-8");
             IOUtils.copy(inputStream,response.getOutputStream());
@@ -91,6 +106,75 @@ public class MinioTemplate {
             return Response.no(ResponseCode.FILE_IS_NOT_EXIST.getMessage());
         }
 
+    }
+
+    /**
+     *创建桶
+     * @param bucketName 桶名称
+     * @return
+     */
+    public Response createBucket(String bucketName){
+        log.info("MinioTemplate[]createBucket[]bucketName:{}",bucketName);
+        if (StringUtils.isEmpty(bucketName)){
+            return Response.no(ResponseCode.BUCKETNAME_IS_NULL.getMessage());
+        }
+        try {
+        if (minioClient.bucketExists(bucketName)){
+            return Response.no(ResponseCode.BUCKET_IS_EXIST.getMessage());
+        }
+
+            minioClient.makeBucket(bucketName);
+            return Response.yes();
+        }catch (Exception e) {
+            log.error("MinioTemplate[]createBucket[]bucketName:{}cause:{}",bucketName,e);
+            return Response.no(ResponseCode.BUCKET_CREATE_FAILED.getMessage());
+        }
+    }
+
+    /**
+     * 删除桶
+     * @param bucketName 桶名称
+     * @return
+     */
+    public Response deleteBucket(String bucketName) {
+        log.info("MinioTemplate[]deleteBucket[]bucketName:{}",bucketName);
+        if(StringUtils.isEmpty(bucketName)){
+            return Response.no(ResponseCode.BUCKETNAME_IS_NULL.getMessage());
+        }
+
+        try {
+            if (!minioClient.bucketExists(bucketName)){
+                return Response.no(ResponseCode.BUCKET_IS_NOT_EXIST.getMessage());
+            }
+            minioClient.removeBucket(bucketName);
+            return Response.yes();
+        }  catch (Exception e) {
+         log.error("MinioTemplate[]deleteBucket[]bucketName:{}cause:{}",bucketName,e);
+            return Response.no(ResponseCode.BUCKET_DELETE_FAILED.getMessage());
+        }
+    }
+
+    /**
+     * 删除文件
+     * @param bucketName 桶名称
+     * @param fileName 文件名称
+     * @return
+     */
+    public Response deleteObject(String bucketName,String fileName){
+        log.info("MinioTemplate[]deleteObject[]fileName:{}",fileName);
+        if (StringUtils.isEmpty(bucketName)){
+            return Response.no(ResponseCode.BUCKETNAME_IS_NULL.getMessage());
+        }
+        if (StringUtils.isEmpty(fileName)){
+            return Response.no(ResponseCode.FILENAME_IS_NULL.getMessage());
+        }
+        try(InputStream object = minioClient.getObject(bucketName,fileName)){
+            minioClient.removeObject(bucketName,fileName);
+            return Response.yes();
+        }catch(Exception e){
+            log.error("MinioTemplate[]deleteObject[]bucketName:{}fileName:{}cause:{}",bucketName,fileName,e);
+            return Response.no(ResponseCode.FILE_DELETE_FAILED.getMessage());
+        }
     }
 
 }
