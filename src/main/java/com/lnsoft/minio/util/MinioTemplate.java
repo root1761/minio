@@ -96,7 +96,7 @@ public class MinioTemplate {
             }else{
                 fileName=new String(file.getBytes("UTF-8"),"iso-8859-1");
             }
-            response.setHeader("Content-disposition","attachment;filename="+file);
+            response.setHeader("Content-Disposition","attachment;filename="+fileName);
             response.setContentType("application/force-download");
             response.setCharacterEncoding("UTF-8");
             IOUtils.copy(inputStream,response.getOutputStream());

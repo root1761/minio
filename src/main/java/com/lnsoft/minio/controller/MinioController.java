@@ -5,6 +5,8 @@ import com.lnsoft.minio.response.Response;
 import com.lnsoft.minio.util.MinioTemplate;
 import io.minio.MinioClient;
 import io.minio.errors.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import java.util.Objects;
  * @author Louyp
  * @since 2020/04/21 23:20:00
  */
+@Api(value="minio")
 @RestController
 @Slf4j
 @RequestMapping("/minioOperation")
@@ -43,6 +46,7 @@ public class MinioController {
      */
     @CrossOrigin
     @PostMapping("/uploadFile")
+    @ApiOperation(value="上传文件",notes = "上传文件")
     public Response uploadFile(@RequestParam("pre") String pre,@RequestParam("file") MultipartFile file, @RequestParam("bucketName") String bucketName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidArgumentException {
         log.info("MinioController[]uploadFile[]file:{}bucketName:{}",file,bucketName);
       return minioTemplate.uploadFile(pre,file,bucketName);
@@ -57,6 +61,7 @@ public class MinioController {
      * @return
      */
     @CrossOrigin
+    @ApiOperation(value="下载文件",notes = "下载文件")
     @PostMapping("/downloadFile")
     public Response downloadFile(@RequestParam(value = "bucketName") String bucketName, @RequestParam(required = true) String file, HttpServletRequest request, HttpServletResponse response){
         log.info("MinioController[]downLoadFile[]file:{}request:{}response:{}",file,request,response);
@@ -68,6 +73,7 @@ public class MinioController {
      * @param bucketName 桶名称
      * @return
      */
+    @ApiOperation(value="创建桶",notes = "创建桶")
     @CrossOrigin
     @PostMapping("/createBucket")
     public Response createBucket(@RequestParam String bucketName){
