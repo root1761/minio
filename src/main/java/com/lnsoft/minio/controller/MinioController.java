@@ -5,8 +5,7 @@ import com.lnsoft.minio.response.Response;
 import com.lnsoft.minio.util.MinioTemplate;
 import io.minio.MinioClient;
 import io.minio.errors.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +46,7 @@ public class MinioController {
     @CrossOrigin
     @PostMapping("/uploadFile")
     @ApiOperation(value="上传文件",notes = "上传文件")
+    @ApiOperationSupport(params =@DynamicParameters(name = "UploadFileModel",properties = {@DynamicParameter(name = "pre",value = "前缀",example = "20200429")}))
     public Response uploadFile(@RequestParam("pre") String pre,@RequestParam("file") MultipartFile file, @RequestParam("bucketName") String bucketName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidArgumentException {
         log.info("MinioController[]uploadFile[]file:{}bucketName:{}",file,bucketName);
       return minioTemplate.uploadFile(pre,file,bucketName);
@@ -86,11 +86,12 @@ public class MinioController {
      * @param bucketName 桶名称
      * @return
      */
+    @ApiOperation(value="删除桶",notes="删除桶")
     @CrossOrigin
     @PostMapping("/removeBucket")
     public Response removeBucket(@RequestParam String bucketName){
         log.info("MinioController[]removeBucket[]bucketName:{}",bucketName);
-        return minioTemplate.deleteBucket(bucketName);
+        return minioTemplate.deleteBucket(bucketName.trim());
 }
 
     /**

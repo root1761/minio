@@ -3,6 +3,7 @@ package com.lnsoft.minio.util;
 import com.lnsoft.minio.enums.ResponseCode;
 import com.lnsoft.minio.response.Response;
 import io.minio.MinioClient;
+import io.minio.ObjectStat;
 import io.minio.errors.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -112,6 +113,8 @@ public class MinioTemplate {
      *创建桶
      * @param bucketName 桶名称
      * @return
+     *
+     *
      */
     public Response createBucket(String bucketName){
         log.info("MinioTemplate[]createBucket[]bucketName:{}",bucketName);
@@ -168,7 +171,8 @@ public class MinioTemplate {
         if (StringUtils.isEmpty(fileName)){
             return Response.no(ResponseCode.FILENAME_IS_NULL.getMessage());
         }
-        try(InputStream object = minioClient.getObject(bucketName,fileName)){
+        try{
+            minioClient.statObject(bucketName, fileName);
             minioClient.removeObject(bucketName,fileName);
             return Response.yes();
         }catch(Exception e){

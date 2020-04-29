@@ -1,7 +1,9 @@
 package com.lnsoft.minio.config;
 
+import com.github.xiaoymin.swaggerbootstrapui.annotations.EnableSwaggerBootstrapUI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -20,7 +22,10 @@ import javax.xml.ws.Response;
  * @Date 2020/04/23
  * @Version 1.0
  **/
-public class Swagger2Config extends WebMvcConfigurationSupport {
+@Configuration
+@EnableSwagger2
+@EnableSwaggerBootstrapUI
+public class Swagger2Config {
 
     @Bean
     public Docket createRestApi() {
@@ -46,12 +51,12 @@ public class Swagger2Config extends WebMvcConfigurationSupport {
                 .build();
     }
 
-    @Override
+  /*  @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/swagger-ui.html").addResourceLocations(
                 "classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations(
                 "classpath:/META-INF/resources/webjars/");
-    }
+    }*/
 
 }
