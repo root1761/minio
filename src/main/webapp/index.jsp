@@ -2,14 +2,17 @@
 <html>
 
 <head>
-<%--    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
     $(function(){
         $("#button").click(function(){
             var file=new FormData();
             file.append("file",$("#file")[0].files[0]);
+            file.append("bucketName",$("#bucketName").val());
+            file.append("pre","2020");
+            alert(1111);
             $.ajax({
-                url:"${pageContext.request.contextPath}/file/upload",
+                url:"/minio/minioOperation/uploadFile",
                 type:"post",
                 async:false,
                 processData:false,
@@ -25,7 +28,7 @@
         })
 
     })
-</script>--%>
+</script>
 </head>
 <body>
 <form method="post" action="/minio/minioOperation/uploadFile" enctype="multipart/form-data">
@@ -39,5 +42,6 @@
    桶名称: <input type="text" name="bucketName" value=""/>
     <input type="submit" value="提交"/>
 </form>
+<button id="button">上传</button>
 </body>
 </html>

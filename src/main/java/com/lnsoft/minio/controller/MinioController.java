@@ -6,6 +6,7 @@ import com.lnsoft.minio.util.MinioTemplate;
 import io.minio.MinioClient;
 import io.minio.errors.*;
 import io.swagger.annotations.*;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +47,11 @@ public class MinioController {
     @CrossOrigin
     @PostMapping("/uploadFile")
     @ApiOperation(value="上传文件",notes = "上传文件")
-    @ApiOperationSupport(params =@DynamicParameters(name = "UploadFileModel",properties = {@DynamicParameter(name = "pre",value = "前缀",example = "20200429")}))
-    public Response uploadFile(@RequestParam("pre") String pre,@RequestParam("file") MultipartFile file, @RequestParam("bucketName") String bucketName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidArgumentException {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pre",value = "前缀",paramType = "query",required = true),
+            @ApiImplicitParam(name="bucketName",value = "桶名",paramType = "query",required = true)
+    })
+    public Response uploadFile(String pre,@ApiParam(required = true,name = "file",value = "文件") @RequestParam MultipartFile file, String bucketName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidArgumentException {
         log.info("MinioController[]uploadFile[]file:{}bucketName:{}",file,bucketName);
       return minioTemplate.uploadFile(pre,file,bucketName);
     }
@@ -63,8 +67,12 @@ public class MinioController {
     @CrossOrigin
     @ApiOperation(value="下载文件",notes = "下载文件")
     @PostMapping("/downloadFile")
-    public Response downloadFile(@RequestParam(value = "bucketName") String bucketName, @RequestParam(required = true) String file, HttpServletRequest request, HttpServletResponse response){
-        log.info("MinioController[]downLoadFile[]file:{}request:{}response:{}",file,request,response);
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "bucketName",value = "桶名",paramType = "query",required = true),
+            @ApiImplicitParam(name = "file",value = "文件名",paramType = "query",required = true)
+    })
+    public Response downloadFile( String bucketName, String file, @Ignore HttpServletRequest request,@Ignore HttpServletResponse response){
+        log.info("MinioController[]downLoadFile[]bucketName:{}file:{}request:{}response:{}",bucketName,file,request,response);
        return minioTemplate.downloadFile(bucketName,file,request,response);
     }
 
@@ -76,7 +84,8 @@ public class MinioController {
     @ApiOperation(value="创建桶",notes = "创建桶")
     @CrossOrigin
     @PostMapping("/createBucket")
-    public Response createBucket(@RequestParam String bucketName){
+    @ApiImplicitParam(name = "bucketName",value = "桶名",paramType = "query",required = true)
+    public Response createBucket( String bucketName){
         log.info("MinioController[]createBucket[]bucketName:{}",bucketName);
         return minioTemplate.createBucket(bucketName);
     }
@@ -89,9 +98,10 @@ public class MinioController {
     @ApiOperation(value="删除桶",notes="删除桶")
     @CrossOrigin
     @PostMapping("/removeBucket")
-    public Response removeBucket(@RequestParam String bucketName){
+    @ApiImplicitParam(name = "bucketName",value = "桶名",paramType = "query",required = true)
+    public Response removeBucket( String bucketName){
         log.info("MinioController[]removeBucket[]bucketName:{}",bucketName);
-        return minioTemplate.deleteBucket(bucketName.trim());
+        return minioTemplate.deleteBucket(bucketName);
 }
 
     /**
@@ -100,9 +110,14 @@ public class MinioController {
      * @param fileName
      * @return
      */
+    @ApiOperation(value="删除文件",notes="删除文件")
     @CrossOrigin
     @PostMapping("/removeFileObject")
-    public Response removeFileObject(@RequestParam String bucketName,@RequestParam String fileName){
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "bucketName",value = "桶名",paramType = "query",required = true),
+            @ApiImplicitParam(name = "fileName",value = "文件名",paramType = "query",required = true)
+    })
+    public Response removeFileObject( String bucketName, String fileName){
         log.info("MinioController[]removeFileObject[]bucketName:{}fileName:{}",bucketName,fileName);
         return minioTemplate.deleteObject(bucketName,fileName);
     }
