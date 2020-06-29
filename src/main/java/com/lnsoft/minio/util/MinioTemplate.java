@@ -15,19 +15,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * @author Louyp
@@ -178,6 +181,21 @@ public class MinioTemplate {
         }catch(Exception e){
             log.error("MinioTemplate[]deleteObject[]bucketName:{}fileName:{}cause:{}",bucketName,fileName,e);
             return Response.no(ResponseCode.FILE_DELETE_FAILED.getMessage());
+        }
+    }
+    public Response uploadFiles(String bucketName) {
+        log.info("MinioTemplete[]uploadFiles[]bucketName:{}",bucketName);
+        File file=new File("/home/gdfw/"+bucketName);
+        final File[] files = file.listFiles();
+        try {
+            for (File file1:files){
+                InputStream inputStream=new FileInputStream(file1);
+                minioClient.putObject(bucketName,file1.getName(),inputStream,new MimetypesFileTypeMap().getContentType(file1));
+            }
+            return Response.yes();
+        } catch (Exception e) {
+            log.error("MinioTemplate[]uploadFiles[]bucketName:{}cause:{}",bucketName,e);
+            return Response.no();
         }
     }
 

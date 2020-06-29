@@ -38,6 +38,7 @@ public class MinioController {
 @Autowired
     private MinioTemplate minioTemplate;
 
+
     /**
      * 上传文件
      * @param file 文件
@@ -121,6 +122,5 @@ public class MinioController {
         log.info("MinioController[]removeFileObject[]bucketName:{}fileName:{}",bucketName,fileName);
         return minioTemplate.deleteObject(bucketName,fileName);
     }
-
 
 }

@@ -21,7 +21,7 @@ public class MinioConfig {
     }
 @Bean
     public MinioClient getMinioClient() throws InvalidPortException, InvalidEndpointException {
-        return new MinioClient(minioParams.getEndpoint(),minioParams.getAccressKey(),minioParams.getSecretKey());
+        return new MinioClient(minioParams.getEndpoint(),minioParams.getAccessKey(),minioParams.getSecretKey());
 }
 @Bean
     public MinioTemplate getMinioTemplate(){

@@ -5,8 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
-public class
-MinioApplication {
+public class MinioApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MinioApplication.class, args);

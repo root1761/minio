@@ -18,6 +18,6 @@ import org.springframework.stereotype.Component;
 @Setter
 public class MinioParams {
     private  String  endpoint;
-    private  String accressKey;
+    private  String accessKey;
     private  String secretKey;
 }
