@@ -8,11 +8,8 @@
         $("#button").click(function(){
             var file=new FormData();
             file.append("file",$("#file")[0].files[0]);
-            file.append("bucketName",$("#bucketName").val());
-            file.append("pre","2020");
-            alert(1111);
             $.ajax({
-                url:"/minio/minioOperation/uploadFile",
+                url:"${pageContext.request.contextPath}/file/upload",
                 type:"post",
                 async:false,
                 processData:false,
@@ -31,17 +28,10 @@
 </script>
 </head>
 <body>
-<form method="post" action="/minio/minioOperation/uploadFile" enctype="multipart/form-data">
-<input type="file" id="file" name="file" />
-    <input type="hidden" id="bucketName" name="bucketName" value="kkx"/>
-    <input type="submit" value="提交"/>
-
+<form method="post">
+<input type="file" id="file" /><br/>
+    <input type="button" value="提交" id="button"/>
+    <input type="button" value="下载" onclick="location.href='${pageContext.request.contextPath}/file/download?fileName=day1 第二节课.wmv'"/>
 </form>
-<form method="post" action="/minio/minioOperation/downloadFile" enctype="multipart/form-data">
-   文件名称: <input type="text" name="file" value=""/>
-   桶名称: <input type="text" name="bucketName" value=""/>
-    <input type="submit" value="提交"/>
-</form>
-<button id="button">上传</button>
 </body>
 </html>

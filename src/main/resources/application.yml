@@ -1,10 +1,10 @@
 server:
-  port: 9202
+  port: 9001
   servlet:
     context-path: /minio
     jsp:
       init-parameters:
-        development: true
+        developments: true
 spring:
   application:
     name: minioserver
@@ -14,5 +14,7 @@ spring:
       suffix: .jsp
   servlet:
     multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
       enabled: true
 
